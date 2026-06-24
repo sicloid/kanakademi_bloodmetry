@@ -236,17 +236,17 @@ function SimulationControlBar({ timerState, selectedDuration, onStart, onPause, 
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
               className="flex-row w-full" style={{ gap: '16px' }}
             >
-              <button className="btn-outline flex-1" onClick={onStop}>
+              <button className="btn-outline" style={{ flex: 1 }} onClick={onStop}>
                 <Square size={20} fill="currentColor" />
                 <span>STOP</span>
               </button>
               {timerState === TimerState.RUNNING ? (
-                <button className="btn-solid-gray flex-1" onClick={onPause}>
+                <button className="btn-solid-gray" style={{ flex: 1 }} onClick={onPause}>
                   <Pause size={20} fill="currentColor" />
                   <span>PAUSE</span>
                 </button>
               ) : (
-                <button className="btn-primary flex-1" onClick={onStart}>
+                <button className="btn-primary" style={{ flex: 1 }} onClick={onStart}>
                   <Play size={20} fill="currentColor" />
                   <span>RESUME</span>
                 </button>
