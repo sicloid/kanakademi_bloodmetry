@@ -205,7 +205,7 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
 // --- Simulation Control Bar ---
 function SimulationControlBar({ timerState, selectedDuration, onStart, onPause, onStop, onDurationSelect }: any) {
   return (
-    <div style={{ background: COLORS.BackgroundPureBlack, borderTop: `1px solid ${COLORS.InstitutionalGray}`, padding: '16px 24px', width: '100%' }}>
+    <div style={{ width: '100%' }}>
       <div className="flex-col items-center w-full max-w-md mx-auto">
         <AnimatePresence mode="wait">
           {(timerState === TimerState.STOPPED || timerState === TimerState.FINISHED) ? (
@@ -328,6 +328,18 @@ export default function App() {
 
         <div style={{ height: '32px' }} />
 
+        {/* Simulation Controls */}
+        <div style={{ width: '100%', maxWidth: '500px', marginBottom: '32px' }}>
+          <SimulationControlBar 
+            timerState={timer.timerState} 
+            selectedDuration={timer.selectedDurationSeconds} 
+            onStart={timer.onStart} 
+            onPause={timer.onPause} 
+            onStop={timer.onStop} 
+            onDurationSelect={timer.onDurationSelect} 
+          />
+        </div>
+
         {/* Stats / Report Panel */}
         <div style={{ width: '100%', maxWidth: '500px' }}>
           {(timer.timerState === TimerState.FINISHED || timer.timerState === TimerState.PAUSED) ? (
@@ -379,19 +391,6 @@ export default function App() {
         </div>
 
       </main>
-
-      {/* Bottom Fixed Control Bar */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50 }}>
-        <SimulationControlBar 
-          timerState={timer.timerState} 
-          selectedDuration={timer.selectedDurationSeconds} 
-          onStart={timer.onStart} 
-          onPause={timer.onPause} 
-          onStop={timer.onStop} 
-          onDurationSelect={timer.onDurationSelect} 
-        />
-      </div>
-      
     </div>
   );
 }
