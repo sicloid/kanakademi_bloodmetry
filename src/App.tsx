@@ -205,16 +205,15 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
 // --- Simulation Control Bar ---
 function SimulationControlBar({ timerState, selectedDuration, onStart, onPause, onStop, onDurationSelect }: any) {
   return (
-    <div style={{ width: '100%' }}>
-      <div className="flex-col items-center w-full max-w-md mx-auto">
-        <AnimatePresence mode="wait">
-          {(timerState === TimerState.STOPPED || timerState === TimerState.FINISHED) ? (
-            <motion.div
-              key="stopped"
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-              className="flex-col w-full"
-            >
-              <div className="flex-row justify-around w-full mb-4">
+    <div className="flex-col items-center w-full max-w-md mx-auto">
+      <AnimatePresence mode="wait">
+        {(timerState === TimerState.STOPPED || timerState === TimerState.FINISHED) ? (
+          <motion.div
+            key="stopped"
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+            className="flex-col w-full"
+          >
+            <div className="flex-row justify-around w-full" style={{ marginBottom: '16px' }}>
                 <button className={`btn-preset ${selectedDuration === 60 ? 'active' : ''}`} onClick={() => onDurationSelect(60)}>
                   <span>1 MIN</span>
                 </button>
@@ -238,24 +237,23 @@ function SimulationControlBar({ timerState, selectedDuration, onStart, onPause, 
             >
               <button className="btn-outline" style={{ flex: 1 }} onClick={onStop}>
                 <Square size={20} fill="currentColor" />
-                <span>STOP</span>
+                <span style={{ marginLeft: '8px' }}>STOP</span>
               </button>
               {timerState === TimerState.RUNNING ? (
                 <button className="btn-solid-gray" style={{ flex: 1 }} onClick={onPause}>
                   <Pause size={20} fill="currentColor" />
-                  <span>PAUSE</span>
+                  <span style={{ marginLeft: '8px' }}>PAUSE</span>
                 </button>
               ) : (
                 <button className="btn-primary" style={{ flex: 1 }} onClick={onStart}>
                   <Play size={20} fill="currentColor" />
-                  <span>RESUME</span>
+                  <span style={{ marginLeft: '8px' }}>RESUME</span>
                 </button>
               )}
             </motion.div>
           )}
         </AnimatePresence>
       </div>
-    </div>
   );
 }
 
@@ -328,38 +326,63 @@ export default function App() {
 
         <div style={{ height: '32px' }} />
 
-        {/* Simulation Controls */}
-        <div style={{ width: '100%', maxWidth: '500px', marginBottom: '32px' }}>
-          <SimulationControlBar 
-            timerState={timer.timerState} 
-            selectedDuration={timer.selectedDurationSeconds} 
-            onStart={timer.onStart} 
-            onPause={timer.onPause} 
-            onStop={timer.onStop} 
-            onDurationSelect={timer.onDurationSelect} 
-          />
-        </div>
+        {/* Dynamic Layout matching Android */}
+        <div style={{ width: '100%', maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          
+          {/* Running Stats (only when NOT finished/paused) */}
+          {(timer.timerState !== TimerState.FINISHED && timer.timerState !== TimerState.PAUSED) && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex-row w-full justify-around items-center"
+            >
+              <div className="flex-col items-center">
+                <span style={{ color: COLORS.InstitutionalGray, fontSize: '11px', fontWeight: 'bold' }}>UNITS SECURED</span>
+                <span style={{ color: COLORS.ElectricWhite, fontSize: '36px', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatNum(unitsCollected)}</span>
+              </div>
+              <div style={{ height: '40px', width: '1px', background: COLORS.InstitutionalGray, opacity: 0.3 }} />
+              <div className="flex-col items-center">
+                <span style={{ color: COLORS.InstitutionalGray, fontSize: '11px', fontWeight: 'bold' }}>POTENTIAL LIVES SAVED</span>
+                <span style={{ color: COLORS.LiveGreen, fontSize: '36px', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatNum(livesSaved)}</span>
+              </div>
+            </motion.div>
+          )}
 
-        {/* Stats / Report Panel */}
-        <div style={{ width: '100%', maxWidth: '500px' }}>
-          {(timer.timerState === TimerState.FINISHED || timer.timerState === TimerState.PAUSED) ? (
+          {/* Control Bar */}
+          <div style={{ 
+             borderTop: `1px solid rgba(160, 170, 181, 0.2)`, 
+             paddingTop: '32px',
+             width: '100%' 
+          }}>
+            <SimulationControlBar 
+              timerState={timer.timerState} 
+              selectedDuration={timer.selectedDurationSeconds} 
+              onStart={timer.onStart} 
+              onPause={timer.onPause} 
+              onStop={timer.onStop} 
+              onDurationSelect={timer.onDurationSelect} 
+            />
+          </div>
+
+          {/* Summary Report (only when finished/paused) */}
+          {(timer.timerState === TimerState.FINISHED || timer.timerState === TimerState.PAUSED) && (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               className="flex-col items-center" 
-              style={{ background: 'rgba(160, 170, 181, 0.3)', border: `1px solid ${COLORS.InstitutionalGray}`, borderRadius: '12px', padding: '20px' }}
+              style={{ background: 'rgba(160, 170, 181, 0.1)', border: `1px solid rgba(160, 170, 181, 0.3)`, borderRadius: '12px', padding: '24px', width: '100%' }}
             >
-              <div className="text-gradient" style={{ fontSize: '12px', fontWeight: 'bold', letterSpacing: '1px', marginBottom: '16px' }}>
+              <div className="text-gradient" style={{ fontSize: '12px', fontWeight: 'bold', letterSpacing: '1.5px', marginBottom: '24px' }}>
                 SIMULATION SUMMARY REPORT
               </div>
               <div className="flex-row w-full justify-around">
                 <div className="flex-col items-center">
-                  <span style={{ color: COLORS.InstitutionalGray, fontSize: '10px', fontWeight: 'bold' }}>UNITS SECURED</span>
-                  <span style={{ color: COLORS.CorporateRed, fontSize: '28px', fontWeight: 900, fontFamily: 'monospace' }}>{formatNum(reportUnits)}</span>
+                  <span style={{ color: COLORS.InstitutionalGray, fontSize: '10px', fontWeight: 'bold', marginBottom: '8px' }}>UNITS SECURED</span>
+                  <span style={{ color: COLORS.CorporateRed, fontSize: '32px', fontWeight: 900, fontFamily: 'monospace' }}>{formatNum(reportUnits)}</span>
                 </div>
                 <div className="flex-col items-center">
-                  <span style={{ color: COLORS.InstitutionalGray, fontSize: '10px', fontWeight: 'bold' }}>LIVES SAVED</span>
-                  <span style={{ color: COLORS.LiveGreen, fontSize: '28px', fontWeight: 900, fontFamily: 'monospace' }}>{formatNum(reportLives)}</span>
+                  <span style={{ color: COLORS.InstitutionalGray, fontSize: '10px', fontWeight: 'bold', marginBottom: '8px' }}>LIVES SAVED</span>
+                  <span style={{ color: COLORS.LiveGreen, fontSize: '32px', fontWeight: 900, fontFamily: 'monospace' }}>{formatNum(reportLives)}</span>
                 </div>
               </div>
               {timer.timerState === TimerState.FINISHED && (
@@ -371,23 +394,8 @@ export default function App() {
                 </div>
               )}
             </motion.div>
-          ) : (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex-row w-full justify-around items-center"
-            >
-              <div className="flex-col items-center">
-                <span style={{ color: COLORS.InstitutionalGray, fontSize: '11px', fontWeight: 'bold' }}>UNITS SECURED</span>
-                <span style={{ color: COLORS.ElectricWhite, fontSize: '36px', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatNum(unitsCollected)}</span>
-              </div>
-              <div style={{ height: '40px', width: '1px', background: COLORS.InstitutionalGray }} />
-              <div className="flex-col items-center">
-                <span style={{ color: COLORS.InstitutionalGray, fontSize: '11px', fontWeight: 'bold' }}>POTENTIAL LIVES SAVED</span>
-                <span style={{ color: COLORS.LiveGreen, fontSize: '36px', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatNum(livesSaved)}</span>
-              </div>
-            </motion.div>
           )}
+
         </div>
 
       </main>
