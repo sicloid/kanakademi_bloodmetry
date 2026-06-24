@@ -108,20 +108,14 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
         <defs>
           <linearGradient id="rightGrad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor={COLORS.CorporateRed} />
-            <stop offset="25%" stopColor={COLORS.CorporateRed} />
-            <stop offset="50%" stopColor={COLORS.CorporateBlue} />
-            <stop offset="75%" stopColor={COLORS.CorporateRed} />
-            <stop offset="100%" stopColor={COLORS.CorporateRed} />
+            <stop offset="100%" stopColor={COLORS.CorporateBlue} />
           </linearGradient>
           <linearGradient id="leftGrad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor={COLORS.CorporateRed} />
-            <stop offset="25%" stopColor={COLORS.CorporateRed} />
-            <stop offset="50%" stopColor={COLORS.CorporateBlue} />
-            <stop offset="75%" stopColor={COLORS.CorporateRed} />
-            <stop offset="100%" stopColor={COLORS.CorporateRed} />
+            <stop offset="100%" stopColor={COLORS.CorporateBlue} />
           </linearGradient>
           <filter id="glow">
-            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
             <feMerge>
               <feMergeNode in="coloredBlur"/>
               <feMergeNode in="SourceGraphic"/>
@@ -136,15 +130,32 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
           strokeLinecap="round"
         />
 
-        {/* Glow Track (visible when progress > 0) */}
+        {/* Glow Tracks (visible when progress > 0) */}
         {progress > 0 && (
-          <circle
-            cx={size / 2} cy={size / 2} r={radius}
-            fill="none" stroke="rgba(230, 0, 51, 0.06)" strokeWidth={strokeWidth * 2.5}
-            strokeDasharray={`${halfCircumference * progress * 2} ${circumference}`}
-            strokeDashoffset={0}
-            transform={`rotate(-90 ${size / 2} ${size / 2})`}
-          />
+          <>
+            <circle
+              cx={size / 2} cy={size / 2} r={radius}
+              fill="none" stroke="url(#rightGrad)" strokeWidth={strokeWidth}
+              strokeLinecap="round"
+              strokeDasharray={`${halfCircumference} ${circumference}`}
+              strokeDashoffset={halfCircumference - (halfCircumference * progress)}
+              transform={`rotate(-90 ${size / 2} ${size / 2})`}
+              filter="url(#glow)"
+              opacity={0.6}
+              style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
+            />
+            <circle
+              cx={size / 2} cy={size / 2} r={radius}
+              fill="none" stroke="url(#leftGrad)" strokeWidth={strokeWidth}
+              strokeLinecap="round"
+              strokeDasharray={`${halfCircumference} ${circumference}`}
+              strokeDashoffset={halfCircumference - (halfCircumference * progress)}
+              transform={`rotate(-90 ${size / 2} ${size / 2}) scale(1, -1) translate(0, -${size})`}
+              filter="url(#glow)"
+              opacity={0.6}
+              style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
+            />
+          </>
         )}
 
         {/* Right Arc */}
@@ -155,7 +166,7 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
           strokeDasharray={`${halfCircumference} ${circumference}`}
           strokeDashoffset={halfCircumference - (halfCircumference * progress)}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
-          style={{ transition: 'stroke-dashoffset 0.1s linear' }}
+          style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
         />
 
         {/* Left Arc */}
@@ -166,7 +177,7 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
           strokeDasharray={`${halfCircumference} ${circumference}`}
           strokeDashoffset={halfCircumference - (halfCircumference * progress)}
           transform={`rotate(-90 ${size / 2} ${size / 2}) scale(1, -1) translate(0, -${size})`}
-          style={{ transition: 'stroke-dashoffset 0.1s linear' }}
+          style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
         />
 
         {/* Heartbeat Graph */}
@@ -293,7 +304,7 @@ export default function App() {
   const reportUnits = Math.floor(totalElapsedSeconds * unitsPerSecond);
   const reportLives = reportUnits * 3;
 
-  const progress = timer.selectedDurationSeconds > 0 ? (animatedElapsed / timer.selectedDurationSeconds) : 0;
+  const progress = timer.selectedDurationSeconds > 0 ? (totalElapsedSeconds / timer.selectedDurationSeconds) : 0;
 
   const formatNum = (n: number) => new Intl.NumberFormat('en-US').format(n);
 
@@ -306,7 +317,7 @@ export default function App() {
         {/* Header */}
         <div className="flex-col items-center mt-4">
           <div style={{ fontSize: '18px', fontWeight: 'bold', letterSpacing: '1.5px' }} className="text-gradient">
-            TIME-BOUND SIMULATOR
+            BloodMetry Simulator
           </div>
           <div style={{ color: COLORS.InstitutionalGray, fontSize: '12px', fontWeight: 500, marginTop: '4px' }}>
             KanAkademi Global Impact Projection
