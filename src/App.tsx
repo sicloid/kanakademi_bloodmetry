@@ -308,7 +308,7 @@ function EligibilityQuizModal({ isOpen, onClose, onPledge }: { isOpen: boolean, 
               <div className="panel flex-col gap-2 w-full mb-6">
                 <span className="text-muted text-xs font-bold tracking-widest mb-2">VİTAL ÖZETİ</span>
                 <div className="flex-row justify-between"><span className="text-xs text-muted">Yaş Şartı (17-65)</span><span className={`text-xs font-bold ${age >= 17 && age <= 65 ? 'text-white' : 'text-crimson'}`}>{age} yaş</span></div>
-                <div className="flex-row justify-between"><span className="text-xs text-muted">Ağırlık Şartı (>=50 kg)</span><span className={`text-xs font-bold ${weight >= 50 ? 'text-white' : 'text-crimson'}`}>{weight} kg</span></div>
+                <div className="flex-row justify-between"><span className="text-xs text-muted">Ağırlık Şartı (&gt;=50 kg)</span><span className={`text-xs font-bold ${weight >= 50 ? 'text-white' : 'text-crimson'}`}>{weight} kg</span></div>
                 <div className="flex-row justify-between"><span className="text-xs text-muted">Genel Sağlık Durumu</span><span className={`text-xs font-bold ${feelingWell ? 'text-white' : 'text-crimson'}`}>{feelingWell ? 'İyi' : 'Akut Rahatsızlık'}</span></div>
                 <div className="flex-row justify-between"><span className="text-xs text-muted">56-Gün Bekleme Süresi</span><span className={`text-xs font-bold ${recentDonation === false ? 'text-white' : 'text-crimson'}`}>{recentDonation === false ? 'Uygun' : 'Yakın Bağış'}</span></div>
               </div>

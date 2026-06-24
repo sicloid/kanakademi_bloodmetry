@@ -1,0 +1,24 @@
+Retrieving project…
+Deploying bicersukru15-2550s-projects/kanakademi_bloodmetry
+Uploading [--------------------] (0.0B/82B)
+Uploading [====================] (82.0B/82B)
+Inspect: https://vercel.com/bicersukru15-2550s-projects/kanakademi_bloodmetry/CaMfBCFf3tx9neRwozg215mkpGdK [2s]
+Production: https://kanakademibloodmetry-8jvwhuqrq-bicersukru15-2550s-projects.vercel.app [2s]
+https://kanakademibloodmetry-8jvwhuqrq-bicersukru15-2550s-projects.vercel.appBuilding...
+Building: Running build in Washington, D.C., USA (East) – iad1
+Building: Build machine configuration: 2 cores, 8 GB
+Building: Retrieving list of deployment files...
+Building: Previous build caches not available.
+Building: Downloading 21 deployment files...
+Building: Running "vercel build"
+Building: Vercel CLI 54.14.0
+Building: Vercel CLI 54.14.0
+Building: Installing dependencies...
+Building: added 28 packages in 5s
+Building: 9 packages are looking for funding
+Building: run `npm fund` for details
+Building: Running "npm run build"
+Building: > kanakademi_bloodmetry@0.0.0 build
+Building: > tsc -b && vite build
+Building: src/App.tsx(311,111): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+Error: Command "npm run build" exited with 2
