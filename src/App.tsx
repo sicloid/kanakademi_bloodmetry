@@ -61,19 +61,18 @@ function RadialProgressGauge({ progress, isRunning, currentSeconds, isInfinite }
   const minutes = Math.floor(currentSeconds / 60).toString().padStart(2, '0');
   const seconds = (currentSeconds % 60).toString().padStart(2, '0');
 
-  const visualProgress = isInfinite ? 0.8 : progress;
-  const dashOffset = halfCircumference - (halfCircumference * visualProgress);
   const backgroundStroke = isInfinite ? 'rgba(230, 0, 51, 0.15)' : 'rgba(160, 170, 181, 0.3)';
 
   return (
     <div style={{ position: 'relative', width: size, height: size, margin: '0 auto' }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ overflow: 'visible' }}>
+      <svg 
+        width={size} 
+        height={size} 
+        viewBox={`0 0 ${size} ${size}`} 
+        style={{ overflow: 'visible', transform: 'rotate(-90deg)' }}
+      >
         <defs>
-          <linearGradient id="rightGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor={COLORS.CorporateRed} />
-            <stop offset="100%" stopColor={COLORS.CorporateBlue} />
-          </linearGradient>
-          <linearGradient id="leftGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <linearGradient id="mainGrad" x1="100%" y1="0%" x2="0%" y2="0%">
             <stop offset="0%" stopColor={COLORS.CorporateRed} />
             <stop offset="100%" stopColor={COLORS.CorporateBlue} />
           </linearGradient>
@@ -93,60 +92,78 @@ function RadialProgressGauge({ progress, isRunning, currentSeconds, isInfinite }
           strokeLinecap="round"
         />
 
-        {/* Glow Tracks & Arcs Wrapper */}
-        <g className={isInfinite && isRunning ? 'spin-infinite' : ''} style={{ transformOrigin: 'center' }}>
-          {/* Glow Tracks (visible when progress > 0 or infinite) */}
-          {(visualProgress > 0) && (
-          <>
+        {isInfinite ? (
+          /* INFINITE CHRONOMETER MODE: Single 80% arc spinning */
+          <g className={isRunning ? 'spin-infinite' : ''} style={{ transformOrigin: 'center' }}>
+            {/* Glow */}
             <circle
               cx={size / 2} cy={size / 2} r={radius}
-              fill="none" stroke="url(#rightGrad)" strokeWidth={strokeWidth}
+              fill="none" stroke="url(#mainGrad)" strokeWidth={strokeWidth}
               strokeLinecap="round"
-              strokeDasharray={`${halfCircumference} ${circumference}`}
-              strokeDashoffset={dashOffset}
-              transform={`rotate(-90 ${size / 2} ${size / 2})`}
+              strokeDasharray={`${circumference} ${circumference}`}
+              strokeDashoffset={circumference * 0.2}
               filter="url(#glow)"
               opacity={0.85}
+            />
+            {/* Main Arc */}
+            <circle
+              cx={size / 2} cy={size / 2} r={radius}
+              fill="none" stroke="url(#mainGrad)" strokeWidth={strokeWidth}
+              strokeLinecap="round"
+              strokeDasharray={`${circumference} ${circumference}`}
+              strokeDashoffset={circumference * 0.2}
+            />
+          </g>
+        ) : (
+          /* TIME-BOUND MODE: Symmetric Left & Right Arcs */
+          <>
+            {progress > 0 && (
+              <>
+                {/* Glow Right */}
+                <circle
+                  cx={size / 2} cy={size / 2} r={radius}
+                  fill="none" stroke="url(#mainGrad)" strokeWidth={strokeWidth}
+                  strokeLinecap="round"
+                  strokeDasharray={`${halfCircumference} ${circumference}`}
+                  strokeDashoffset={halfCircumference - (halfCircumference * progress)}
+                  filter="url(#glow)"
+                  opacity={0.85}
+                  style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
+                />
+                {/* Glow Left */}
+                <circle
+                  cx={size / 2} cy={size / 2} r={radius}
+                  fill="none" stroke="url(#mainGrad)" strokeWidth={strokeWidth}
+                  strokeLinecap="round"
+                  strokeDasharray={`${halfCircumference} ${circumference}`}
+                  strokeDashoffset={halfCircumference - (halfCircumference * progress)}
+                  style={{ transformOrigin: 'center', transform: 'scale(1, -1)', transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
+                  filter="url(#glow)"
+                  opacity={0.85}
+                />
+              </>
+            )}
+
+            {/* Main Right Arc */}
+            <circle
+              cx={size / 2} cy={size / 2} r={radius}
+              fill="none" stroke="url(#mainGrad)" strokeWidth={strokeWidth}
+              strokeLinecap="round"
+              strokeDasharray={`${halfCircumference} ${circumference}`}
+              strokeDashoffset={halfCircumference - (halfCircumference * progress)}
               style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
             />
+            {/* Main Left Arc */}
             <circle
               cx={size / 2} cy={size / 2} r={radius}
-              fill="none" stroke="url(#leftGrad)" strokeWidth={strokeWidth}
+              fill="none" stroke="url(#mainGrad)" strokeWidth={strokeWidth}
               strokeLinecap="round"
               strokeDasharray={`${halfCircumference} ${circumference}`}
-              strokeDashoffset={dashOffset}
-              transform={`rotate(-90 ${size / 2} ${size / 2}) scale(1, -1) translate(0, -${size})`}
-              filter="url(#glow)"
-              opacity={0.85}
-              style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
+              strokeDashoffset={halfCircumference - (halfCircumference * progress)}
+              style={{ transformOrigin: 'center', transform: 'scale(1, -1)', transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
             />
           </>
         )}
-
-        {/* Right Arc */}
-        <circle
-          cx={size / 2} cy={size / 2} r={radius}
-          fill="none" stroke="url(#rightGrad)" strokeWidth={strokeWidth}
-          strokeLinecap="round"
-          strokeDasharray={`${halfCircumference} ${circumference}`}
-          strokeDashoffset={dashOffset}
-          transform={`rotate(-90 ${size / 2} ${size / 2})`}
-          style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
-        />
-
-        {/* Left Arc */}
-        <circle
-          cx={size / 2} cy={size / 2} r={radius}
-          fill="none" stroke="url(#leftGrad)" strokeWidth={strokeWidth}
-          strokeLinecap="round"
-          strokeDasharray={`${halfCircumference} ${circumference}`}
-          strokeDashoffset={dashOffset}
-          transform={`rotate(-90 ${size / 2} ${size / 2}) scale(1, -1) translate(0, -${size})`}
-          style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
-        />
-      </g>
-
-        {/* Removed Heartbeat Graph */}
       </svg>
       
       {/* Center Countdown Text */}
