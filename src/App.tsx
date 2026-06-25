@@ -264,13 +264,16 @@ export default function App() {
       <main className="flex-col items-center" style={{ flex: 1, padding: '64px 24px', paddingBottom: '100px', overflowY: 'auto' }}>
         
         {/* Header */}
-        <div className="flex-col items-center mt-4">
+        <div className="flex-col items-center mt-4 text-center">
           <img src="/logo.png" alt="KanAkademi Logo" style={{ height: '48px', marginBottom: '12px' }} />
           <div style={{ fontSize: '18px', fontWeight: 'bold', letterSpacing: '1.5px' }} className="text-gradient">
             BloodMetry Simulator
           </div>
           <div style={{ color: COLORS.InstitutionalGray, fontSize: '12px', fontWeight: 500, marginTop: '4px' }}>
             KanAkademi Global Impact Projection
+          </div>
+          <div style={{ color: COLORS.InstitutionalGray, fontSize: '11px', fontStyle: 'italic', marginTop: '12px', opacity: 0.8, maxWidth: '300px' }}>
+            "Around 118.5 million units of donated blood are collected globally every year."
           </div>
         </div>
 
