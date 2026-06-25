@@ -57,6 +57,10 @@ body {
   text-shadow: 0 0 25px rgba(230, 0, 51, 0.6);
 }
 
+@keyframes spin-infinite {
+  100% { transform: rotate(360deg); }
+}
+
 /* Conic Gradient for the Ring */
 .kanakademi-conic-ring {
   position: absolute;

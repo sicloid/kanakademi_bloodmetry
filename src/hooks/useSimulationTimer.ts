@@ -7,34 +7,33 @@ export type TimerState = typeof TimerState[keyof typeof TimerState];
 
 export function useSimulationTimer(initialDuration: number = 300) {
   const [selectedDurationSeconds, setSelectedDurationSeconds] = useState(initialDuration);
-  const [remainingSeconds, setRemainingSeconds] = useState(initialDuration);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [timerState, setTimerState] = useState<TimerState>(TimerState.STOPPED);
 
   useEffect(() => {
     let interval: number | null = null;
     
-    if (timerState === TimerState.RUNNING && remainingSeconds > 0) {
+    if (timerState === TimerState.RUNNING) {
       interval = window.setInterval(() => {
-        setRemainingSeconds((prev) => {
-          if (prev <= 1) {
+        setElapsedSeconds((prev) => {
+          const next = prev + 1;
+          if (selectedDurationSeconds > 0 && next >= selectedDurationSeconds) {
             setTimerState(TimerState.FINISHED);
-            return 0;
+            return selectedDurationSeconds;
           }
-          return prev - 1;
+          return next;
         });
       }, 1000);
-    } else if (remainingSeconds === 0 && timerState === TimerState.RUNNING) {
-      setTimerState(TimerState.FINISHED);
     }
 
     return () => {
       if (interval) window.clearInterval(interval);
     };
-  }, [timerState, remainingSeconds]);
+  }, [timerState, selectedDurationSeconds]);
 
   const onStart = () => {
     if (timerState === TimerState.FINISHED) {
-      setRemainingSeconds(selectedDurationSeconds);
+      setElapsedSeconds(0);
     }
     setTimerState(TimerState.RUNNING);
   };
@@ -45,19 +44,19 @@ export function useSimulationTimer(initialDuration: number = 300) {
 
   const onStop = () => {
     setTimerState(TimerState.STOPPED);
-    setRemainingSeconds(selectedDurationSeconds);
+    setElapsedSeconds(0);
   };
 
   const onDurationSelect = (duration: number) => {
     if (timerState === TimerState.STOPPED) {
       setSelectedDurationSeconds(duration);
-      setRemainingSeconds(duration);
+      setElapsedSeconds(0);
     }
   };
 
   return {
     selectedDurationSeconds,
-    remainingSeconds,
+    elapsedSeconds,
     timerState,
     onStart,
     onPause,

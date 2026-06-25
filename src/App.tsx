@@ -46,8 +46,8 @@ function TickerText({ text, color, fontSize, fontWeight }: { text: string, color
   );
 }
 
-// --- Radial Progress Gauge ---
-function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progress: number, isRunning: boolean, remainingSeconds: number }) {
+// --- RadialProgressGauge ---
+function RadialProgressGauge({ progress, isRunning, currentSeconds, isInfinite }: { progress: number, isRunning: boolean, currentSeconds: number, isInfinite: boolean }) {
   const size = 300;
   const strokeWidth = 12;
   const radius = (size - strokeWidth) / 2;
@@ -58,8 +58,12 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
 
   // Removed heartbeat generator as requested
 
-  const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, '0');
-  const seconds = (remainingSeconds % 60).toString().padStart(2, '0');
+  const minutes = Math.floor(currentSeconds / 60).toString().padStart(2, '0');
+  const seconds = (currentSeconds % 60).toString().padStart(2, '0');
+
+  const visualProgress = isInfinite ? 0.8 : progress;
+  const dashOffset = halfCircumference - (halfCircumference * visualProgress);
+  const backgroundStroke = isInfinite ? 'rgba(230, 0, 51, 0.15)' : 'rgba(160, 170, 181, 0.3)';
 
   return (
     <div style={{ position: 'relative', width: size, height: size, margin: '0 auto' }}>
@@ -85,19 +89,21 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
         {/* Background Track */}
         <circle
           cx={size / 2} cy={size / 2} r={radius}
-          fill="none" stroke="rgba(160, 170, 181, 0.3)" strokeWidth={strokeWidth}
+          fill="none" stroke={backgroundStroke} strokeWidth={strokeWidth}
           strokeLinecap="round"
         />
 
-        {/* Glow Tracks (visible when progress > 0) */}
-        {progress > 0 && (
+        {/* Glow Tracks & Arcs Wrapper */}
+        <g className={isInfinite && isRunning ? 'spin-infinite' : ''} style={{ transformOrigin: 'center' }}>
+          {/* Glow Tracks (visible when progress > 0 or infinite) */}
+          {(visualProgress > 0) && (
           <>
             <circle
               cx={size / 2} cy={size / 2} r={radius}
               fill="none" stroke="url(#rightGrad)" strokeWidth={strokeWidth}
               strokeLinecap="round"
               strokeDasharray={`${halfCircumference} ${circumference}`}
-              strokeDashoffset={halfCircumference - (halfCircumference * progress)}
+              strokeDashoffset={dashOffset}
               transform={`rotate(-90 ${size / 2} ${size / 2})`}
               filter="url(#glow)"
               opacity={0.85}
@@ -108,7 +114,7 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
               fill="none" stroke="url(#leftGrad)" strokeWidth={strokeWidth}
               strokeLinecap="round"
               strokeDasharray={`${halfCircumference} ${circumference}`}
-              strokeDashoffset={halfCircumference - (halfCircumference * progress)}
+              strokeDashoffset={dashOffset}
               transform={`rotate(-90 ${size / 2} ${size / 2}) scale(1, -1) translate(0, -${size})`}
               filter="url(#glow)"
               opacity={0.85}
@@ -123,7 +129,7 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
           fill="none" stroke="url(#rightGrad)" strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={`${halfCircumference} ${circumference}`}
-          strokeDashoffset={halfCircumference - (halfCircumference * progress)}
+          strokeDashoffset={dashOffset}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
           style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
         />
@@ -134,10 +140,11 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
           fill="none" stroke="url(#leftGrad)" strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={`${halfCircumference} ${circumference}`}
-          strokeDashoffset={halfCircumference - (halfCircumference * progress)}
+          strokeDashoffset={dashOffset}
           transform={`rotate(-90 ${size / 2} ${size / 2}) scale(1, -1) translate(0, -${size})`}
           style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
         />
+      </g>
 
         {/* Removed Heartbeat Graph */}
       </svg>
@@ -182,6 +189,9 @@ function SimulationControlBar({ timerState, selectedDuration, onStart, onPause, 
                 <button className={`btn-preset ${selectedDuration === 300 ? 'active' : ''}`} onClick={() => onDurationSelect(300)}>
                   <span>5 MIN</span>
                 </button>
+                <button className={`btn-preset ${selectedDuration === 0 ? 'active' : ''}`} onClick={() => onDurationSelect(0)}>
+                  <span style={{ fontSize: '18px' }}>∞</span>
+                </button>
               </div>
               <button className="btn-primary w-full" onClick={onStart}>
                 <Play size={20} fill="currentColor" />
@@ -218,11 +228,12 @@ function SimulationControlBar({ timerState, selectedDuration, onStart, onPause, 
 
 // --- Main App ---
 export default function App() {
-  const timer = useSimulationTimer(300); // Default 5 mins
+  const timer = useSimulationTimer(0); // Default to ∞ mode
   const [animatedElapsed, setAnimatedElapsed] = useState(0);
 
   const unitsPerSecond = 229 / 60;
-  const totalElapsedSeconds = timer.selectedDurationSeconds - timer.remainingSeconds;
+  const totalElapsedSeconds = timer.elapsedSeconds;
+  const isInfinite = timer.selectedDurationSeconds === 0;
 
   // Smooth animation for elapsed
   useEffect(() => {
@@ -252,7 +263,7 @@ export default function App() {
   const reportUnits = Math.floor(totalElapsedSeconds * unitsPerSecond);
   const reportLives = reportUnits * 3;
 
-  const progress = timer.selectedDurationSeconds > 0 ? (totalElapsedSeconds / timer.selectedDurationSeconds) : 0;
+  const progress = isInfinite ? 0 : (timer.selectedDurationSeconds > 0 ? (totalElapsedSeconds / timer.selectedDurationSeconds) : 0);
 
   const formatNum = (n: number) => new Intl.NumberFormat('en-US').format(n);
 
@@ -280,7 +291,8 @@ export default function App() {
           <RadialProgressGauge 
             progress={progress} 
             isRunning={timer.timerState === TimerState.RUNNING} 
-            remainingSeconds={timer.remainingSeconds} 
+            currentSeconds={totalElapsedSeconds}
+            isInfinite={isInfinite}
           />
         </div>
 
