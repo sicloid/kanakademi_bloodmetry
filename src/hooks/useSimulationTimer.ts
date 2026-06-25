@@ -54,9 +54,14 @@ export function useSimulationTimer(initialDuration: number = 300) {
     }
   };
 
+  const displaySeconds = selectedDurationSeconds > 0 
+    ? selectedDurationSeconds - elapsedSeconds 
+    : elapsedSeconds;
+
   return {
     selectedDurationSeconds,
     elapsedSeconds,
+    displaySeconds,
     timerState,
     onStart,
     onPause,

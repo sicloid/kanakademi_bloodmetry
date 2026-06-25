@@ -77,7 +77,7 @@ function RadialProgressGauge({ progress, isRunning, currentSeconds, isInfinite }
             <stop offset="100%" stopColor={COLORS.CorporateBlue} />
           </linearGradient>
           <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="12" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
             <feMerge>
               <feMergeNode in="coloredBlur"/>
               <feMergeNode in="SourceGraphic"/>
@@ -94,7 +94,7 @@ function RadialProgressGauge({ progress, isRunning, currentSeconds, isInfinite }
 
         {isInfinite ? (
           /* INFINITE CHRONOMETER MODE: Single 80% arc spinning */
-          <g className={isRunning ? 'spin-infinite' : ''} style={{ transformOrigin: 'center' }}>
+          <g style={{ transformOrigin: '50% 50%', animation: (isRunning ? 'spin-infinite 3s linear infinite' : 'none') }}>
             {/* Glow */}
             <circle
               cx={size / 2} cy={size / 2} r={radius}
@@ -103,7 +103,7 @@ function RadialProgressGauge({ progress, isRunning, currentSeconds, isInfinite }
               strokeDasharray={`${circumference} ${circumference}`}
               strokeDashoffset={circumference * 0.2}
               filter="url(#glow)"
-              opacity={0.85}
+              opacity={0.6}
             />
             {/* Main Arc */}
             <circle
@@ -127,7 +127,7 @@ function RadialProgressGauge({ progress, isRunning, currentSeconds, isInfinite }
                   strokeDasharray={`${halfCircumference} ${circumference}`}
                   strokeDashoffset={halfCircumference - (halfCircumference * progress)}
                   filter="url(#glow)"
-                  opacity={0.85}
+                  opacity={0.6}
                   style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
                 />
                 {/* Glow Left */}
@@ -139,7 +139,7 @@ function RadialProgressGauge({ progress, isRunning, currentSeconds, isInfinite }
                   strokeDashoffset={halfCircumference - (halfCircumference * progress)}
                   style={{ transformOrigin: 'center', transform: 'scale(1, -1)', transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
                   filter="url(#glow)"
-                  opacity={0.85}
+                  opacity={0.6}
                 />
               </>
             )}
@@ -308,7 +308,7 @@ export default function App() {
           <RadialProgressGauge 
             progress={progress} 
             isRunning={timer.timerState === TimerState.RUNNING} 
-            currentSeconds={totalElapsedSeconds}
+            currentSeconds={timer.displaySeconds}
             isInfinite={isInfinite}
           />
         </div>

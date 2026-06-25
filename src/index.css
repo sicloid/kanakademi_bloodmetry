@@ -61,6 +61,11 @@ body {
   100% { transform: rotate(360deg); }
 }
 
+.spin-infinite {
+  animation: spin-infinite 6s linear infinite;
+  transform-origin: center;
+}
+
 /* Conic Gradient for the Ring */
 .kanakademi-conic-ring {
   position: absolute;
