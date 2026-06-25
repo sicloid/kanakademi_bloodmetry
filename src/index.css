@@ -1,12 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;700;800;900&display=swap');
 
 :root {
-  --bg-pure-black: #000000;
+  --bg-main: #F8F9FA;
   --corporate-red: #E60033;
   --corporate-blue: #0A2240;
   --electric-white: #FFFFFF;
-  --institutional-gray: #A0AAB5;
-  --live-green: #00FF55;
+  --institutional-gray: #7A8B99;
+  --live-green: #00A040;
   
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -20,8 +20,8 @@
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--bg-pure-black);
-  color: var(--electric-white);
+  background-color: var(--bg-main);
+  color: var(--corporate-blue);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
@@ -118,11 +118,11 @@ body {
 }
 
 .btn-preset.active {
-  background: rgba(10, 34, 64, 0.1);
+  background: rgba(10, 34, 64, 0.05);
   border: 1px solid transparent;
   background-clip: padding-box;
   position: relative;
-  color: var(--electric-white);
+  color: var(--corporate-blue);
 }
 
 .btn-preset.active::before {
@@ -164,7 +164,7 @@ body {
 .btn-outline {
   background: transparent;
   border: 1px solid var(--institutional-gray);
-  color: var(--electric-white);
+  color: var(--corporate-blue);
   height: 56px;
   padding: 0 16px;
   border-radius: 8px;

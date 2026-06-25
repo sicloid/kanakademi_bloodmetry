@@ -6,10 +6,10 @@ import { useSimulationTimer, TimerState } from './hooks/useSimulationTimer';
 const COLORS = {
   CorporateRed: '#E60033',
   CorporateBlue: '#0A2240',
-  LiveGreen: '#00FF55',
-  InstitutionalGray: '#A0AAB5',
+  LiveGreen: '#00A040',
+  InstitutionalGray: '#7A8B99',
   ElectricWhite: '#FFFFFF',
-  BackgroundPureBlack: '#000000'
+  BackgroundMain: '#F8F9FA'
 };
 
 // --- TickerText ---
@@ -54,50 +54,9 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
   const circumference = 2 * Math.PI * radius;
   const halfCircumference = circumference / 2;
   
-  const [phase, setPhase] = useState(0);
+  // Removed phase animation as requested
 
-  useEffect(() => {
-    let frame: number;
-    let startTime = performance.now();
-    const animate = (time: number) => {
-      // 1500ms duration for 2PI phase
-      const elapsed = time - startTime;
-      const newPhase = (elapsed % 1500) / 1500 * 2 * Math.PI;
-      setPhase(newPhase);
-      frame = requestAnimationFrame(animate);
-    };
-    if (isRunning) {
-      frame = requestAnimationFrame(animate);
-    }
-    return () => cancelAnimationFrame(frame);
-  }, [isRunning]);
-
-  // Generate heartbeat path
-  const innerRadius = radius * 0.7;
-  const points = [];
-  for (let i = 0; i <= 360; i += 5) {
-    const angleRad = (i * Math.PI) / 180 - Math.PI / 2;
-    const normalizedProgress = i / 360;
-    
-    let spike = 0;
-    if (normalizedProgress >= 0.4 && normalizedProgress <= 0.6) {
-      const localOffset = (normalizedProgress - 0.4) / 0.2;
-      if (localOffset < 0.2) spike = Math.sin(localOffset * 5 * Math.PI) * 20;
-      else if (localOffset < 0.4) spike = 0;
-      else if (localOffset < 0.5) spike = -40;
-      else if (localOffset < 0.7) spike = 45;
-      else if (localOffset < 0.85) spike = 0;
-      else spike = Math.sin((localOffset - 0.85) * 6.6 * Math.PI) * 15;
-    } else {
-      spike = Math.sin(normalizedProgress * 10 * Math.PI - phase) * 5;
-    }
-    
-    const currentRadius = innerRadius + spike;
-    const x = size / 2 + currentRadius * Math.cos(angleRad);
-    const y = size / 2 + currentRadius * Math.sin(angleRad);
-    points.push(`${i === 0 ? 'M' : 'L'} ${x} ${y}`);
-  }
-  const heartbeatPath = points.join(' ') + ' Z';
+  // Removed heartbeat generator as requested
 
   const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, '0');
   const seconds = (remainingSeconds % 60).toString().padStart(2, '0');
@@ -180,33 +139,23 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
           style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
         />
 
-        {/* Heartbeat Graph */}
-        {isRunning && (
-          <path
-            d={heartbeatPath}
-            fill="none"
-            stroke="rgba(230,0,51,0.5)"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        )}
+        {/* Removed Heartbeat Graph */}
       </svg>
       
       {/* Center Countdown Text */}
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <TickerText text={minutes} color={COLORS.ElectricWhite} fontSize="56px" fontWeight={300} />
+          <TickerText text={minutes} color={COLORS.CorporateBlue} fontSize="56px" fontWeight={300} />
           <div style={{
-            color: COLORS.ElectricWhite,
+            color: COLORS.CorporateBlue,
             fontSize: '56px',
             fontWeight: 300,
             fontFamily: 'sans-serif',
             margin: '0 4px',
             paddingBottom: '8px',
-            textShadow: `0 0 25px ${COLORS.ElectricWhite}99`
+            textShadow: `0 0 25px rgba(10, 34, 64, 0.3)`
           }}>:</div>
-          <TickerText text={seconds} color={COLORS.ElectricWhite} fontSize="56px" fontWeight={300} />
+          <TickerText text={seconds} color={COLORS.CorporateBlue} fontSize="56px" fontWeight={300} />
         </div>
       </div>
     </div>
@@ -309,13 +258,14 @@ export default function App() {
   const formatNum = (n: number) => new Intl.NumberFormat('en-US').format(n);
 
   return (
-    <div className="flex-col justify-between" style={{ minHeight: '100vh', background: COLORS.BackgroundPureBlack }}>
+    <div className="flex-col justify-between" style={{ minHeight: '100vh', background: COLORS.BackgroundMain }}>
       
       {/* Scrollable Content Area */}
-      <main className="flex-col items-center" style={{ flex: 1, padding: '16px 24px', paddingBottom: '100px', overflowY: 'auto' }}>
+      <main className="flex-col items-center" style={{ flex: 1, padding: '64px 24px', paddingBottom: '100px', overflowY: 'auto' }}>
         
         {/* Header */}
         <div className="flex-col items-center mt-4">
+          <img src="/logo.png" alt="KanAkademi Logo" style={{ height: '48px', marginBottom: '12px' }} />
           <div style={{ fontSize: '18px', fontWeight: 'bold', letterSpacing: '1.5px' }} className="text-gradient">
             BloodMetry Simulator
           </div>
@@ -348,8 +298,8 @@ export default function App() {
               className="flex-row w-full justify-around items-center"
             >
               <div className="flex-col items-center">
-                <span style={{ color: COLORS.InstitutionalGray, fontSize: '11px', fontWeight: 'bold' }}>UNITS SECURED</span>
-                <span style={{ color: COLORS.ElectricWhite, fontSize: '36px', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatNum(unitsCollected)}</span>
+                <span style={{ color: COLORS.InstitutionalGray, fontSize: '11px', fontWeight: 'bold' }}>KULLANILDI</span>
+                <span style={{ color: COLORS.CorporateBlue, fontSize: '36px', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatNum(unitsCollected)}</span>
               </div>
               <div style={{ height: '40px', width: '1px', background: COLORS.InstitutionalGray, opacity: 0.3 }} />
               <div className="flex-col items-center">
@@ -388,7 +338,7 @@ export default function App() {
               </div>
               <div className="flex-row w-full justify-around">
                 <div className="flex-col items-center">
-                  <span style={{ color: COLORS.InstitutionalGray, fontSize: '10px', fontWeight: 'bold', marginBottom: '8px' }}>UNITS SECURED</span>
+                  <span style={{ color: COLORS.InstitutionalGray, fontSize: '10px', fontWeight: 'bold', marginBottom: '8px' }}>KULLANILDI</span>
                   <span style={{ color: COLORS.CorporateRed, fontSize: '32px', fontWeight: 900, fontFamily: 'monospace' }}>{formatNum(reportUnits)}</span>
                 </div>
                 <div className="flex-col items-center">
