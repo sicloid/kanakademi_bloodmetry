@@ -63,7 +63,7 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
 
   return (
     <div style={{ position: 'relative', width: size, height: size, margin: '0 auto' }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ overflow: 'visible' }}>
         <defs>
           <linearGradient id="rightGrad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor={COLORS.CorporateRed} />
@@ -73,8 +73,8 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
             <stop offset="0%" stopColor={COLORS.CorporateRed} />
             <stop offset="100%" stopColor={COLORS.CorporateBlue} />
           </linearGradient>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="12" result="coloredBlur"/>
             <feMerge>
               <feMergeNode in="coloredBlur"/>
               <feMergeNode in="SourceGraphic"/>
@@ -100,7 +100,7 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
               strokeDashoffset={halfCircumference - (halfCircumference * progress)}
               transform={`rotate(-90 ${size / 2} ${size / 2})`}
               filter="url(#glow)"
-              opacity={0.6}
+              opacity={0.85}
               style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
             />
             <circle
@@ -111,7 +111,7 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
               strokeDashoffset={halfCircumference - (halfCircumference * progress)}
               transform={`rotate(-90 ${size / 2} ${size / 2}) scale(1, -1) translate(0, -${size})`}
               filter="url(#glow)"
-              opacity={0.6}
+              opacity={0.85}
               style={{ transition: isRunning ? 'stroke-dashoffset 1s linear' : 'none' }}
             />
           </>
@@ -144,7 +144,7 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
       
       {/* Center Countdown Text */}
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', filter: 'drop-shadow(0 0 10px rgba(10, 34, 64, 0.2))' }}>
           <TickerText text={minutes} color={COLORS.CorporateBlue} fontSize="56px" fontWeight={300} />
           <div style={{
             color: COLORS.CorporateBlue,
@@ -152,8 +152,7 @@ function RadialProgressGauge({ progress, isRunning, remainingSeconds }: { progre
             fontWeight: 300,
             fontFamily: 'sans-serif',
             margin: '0 4px',
-            paddingBottom: '8px',
-            textShadow: `0 0 25px rgba(10, 34, 64, 0.3)`
+            paddingBottom: '8px'
           }}>:</div>
           <TickerText text={seconds} color={COLORS.CorporateBlue} fontSize="56px" fontWeight={300} />
         </div>
@@ -308,7 +307,7 @@ export default function App() {
                   <span style={{ color: COLORS.LiveGreen, fontSize: '36px', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatNum(livesSaved)}</span>
                 </div>
               </div>
-              <div style={{ color: COLORS.InstitutionalGray, fontSize: '10px', fontStyle: 'italic', marginTop: '16px', opacity: 0.8, textAlign: 'center', maxWidth: '80%' }}>
+              <div style={{ color: COLORS.CorporateBlue, fontSize: '13px', fontWeight: 500, fontStyle: 'italic', marginTop: '24px', textAlign: 'center', maxWidth: '85%' }}>
                 "Around 118.5 million units of donated blood are collected globally every year."
               </div>
             </motion.div>
@@ -351,7 +350,7 @@ export default function App() {
                   <span style={{ color: COLORS.LiveGreen, fontSize: '32px', fontWeight: 900, fontFamily: 'monospace' }}>{formatNum(reportLives)}</span>
                 </div>
               </div>
-              <div style={{ color: COLORS.InstitutionalGray, fontSize: '10px', fontStyle: 'italic', marginTop: '16px', opacity: 0.8, textAlign: 'center' }}>
+              <div style={{ color: COLORS.CorporateBlue, fontSize: '13px', fontWeight: 500, fontStyle: 'italic', marginTop: '24px', textAlign: 'center' }}>
                 "Around 118.5 million units of donated blood are collected globally every year."
               </div>
               {timer.timerState === TimerState.FINISHED && (
