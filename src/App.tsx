@@ -261,19 +261,16 @@ export default function App() {
     <div className="flex-col justify-between" style={{ minHeight: '100vh', background: COLORS.BackgroundMain }}>
       
       {/* Scrollable Content Area */}
-      <main className="flex-col items-center" style={{ flex: 1, padding: '64px 24px', paddingBottom: '100px', overflowY: 'auto' }}>
+      <main className="flex-col items-center" style={{ flex: 1, padding: '24px 24px', paddingBottom: '32px', overflowY: 'auto' }}>
         
         {/* Header */}
         <div className="flex-col items-center mt-4 text-center">
-          <img src="/logo.png" alt="KanAkademi Logo" style={{ height: '48px', marginBottom: '12px' }} />
+          <img src="/logo.png" alt="KanAkademi Logo" style={{ height: '80px', marginBottom: '8px' }} />
           <div style={{ fontSize: '18px', fontWeight: 'bold', letterSpacing: '1.5px' }} className="text-gradient">
             BloodMetry Simulator
           </div>
           <div style={{ color: COLORS.InstitutionalGray, fontSize: '12px', fontWeight: 500, marginTop: '4px' }}>
             KanAkademi Global Impact Projection
-          </div>
-          <div style={{ color: COLORS.InstitutionalGray, fontSize: '11px', fontStyle: 'italic', marginTop: '12px', opacity: 0.8, maxWidth: '300px' }}>
-            "Around 118.5 million units of donated blood are collected globally every year."
           </div>
         </div>
 
@@ -298,16 +295,21 @@ export default function App() {
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex-row w-full justify-around items-center"
+              className="flex-col w-full items-center"
             >
-              <div className="flex-col items-center">
-                <span style={{ color: COLORS.InstitutionalGray, fontSize: '11px', fontWeight: 'bold' }}>KULLANILDI</span>
-                <span style={{ color: COLORS.CorporateBlue, fontSize: '36px', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatNum(unitsCollected)}</span>
+              <div className="flex-row w-full justify-around items-center">
+                <div className="flex-col items-center">
+                  <span style={{ color: COLORS.InstitutionalGray, fontSize: '11px', fontWeight: 'bold' }}>UNITS USED</span>
+                  <span style={{ color: COLORS.CorporateBlue, fontSize: '36px', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatNum(unitsCollected)}</span>
+                </div>
+                <div style={{ height: '40px', width: '1px', background: COLORS.InstitutionalGray, opacity: 0.3 }} />
+                <div className="flex-col items-center">
+                  <span style={{ color: COLORS.InstitutionalGray, fontSize: '11px', fontWeight: 'bold' }}>POTENTIAL LIVES SAVED</span>
+                  <span style={{ color: COLORS.LiveGreen, fontSize: '36px', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatNum(livesSaved)}</span>
+                </div>
               </div>
-              <div style={{ height: '40px', width: '1px', background: COLORS.InstitutionalGray, opacity: 0.3 }} />
-              <div className="flex-col items-center">
-                <span style={{ color: COLORS.InstitutionalGray, fontSize: '11px', fontWeight: 'bold' }}>POTENTIAL LIVES SAVED</span>
-                <span style={{ color: COLORS.LiveGreen, fontSize: '36px', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatNum(livesSaved)}</span>
+              <div style={{ color: COLORS.InstitutionalGray, fontSize: '10px', fontStyle: 'italic', marginTop: '16px', opacity: 0.8, textAlign: 'center', maxWidth: '80%' }}>
+                "Around 118.5 million units of donated blood are collected globally every year."
               </div>
             </motion.div>
           )}
@@ -341,13 +343,16 @@ export default function App() {
               </div>
               <div className="flex-row w-full justify-around">
                 <div className="flex-col items-center">
-                  <span style={{ color: COLORS.InstitutionalGray, fontSize: '10px', fontWeight: 'bold', marginBottom: '8px' }}>KULLANILDI</span>
+                  <span style={{ color: COLORS.InstitutionalGray, fontSize: '10px', fontWeight: 'bold', marginBottom: '8px' }}>UNITS USED</span>
                   <span style={{ color: COLORS.CorporateRed, fontSize: '32px', fontWeight: 900, fontFamily: 'monospace' }}>{formatNum(reportUnits)}</span>
                 </div>
                 <div className="flex-col items-center">
                   <span style={{ color: COLORS.InstitutionalGray, fontSize: '10px', fontWeight: 'bold', marginBottom: '8px' }}>LIVES SAVED</span>
                   <span style={{ color: COLORS.LiveGreen, fontSize: '32px', fontWeight: 900, fontFamily: 'monospace' }}>{formatNum(reportLives)}</span>
                 </div>
+              </div>
+              <div style={{ color: COLORS.InstitutionalGray, fontSize: '10px', fontStyle: 'italic', marginTop: '16px', opacity: 0.8, textAlign: 'center' }}>
+                "Around 118.5 million units of donated blood are collected globally every year."
               </div>
               {timer.timerState === TimerState.FINISHED && (
                 <div style={{ width: '100%', marginTop: '24px' }}>
