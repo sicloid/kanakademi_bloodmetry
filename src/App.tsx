@@ -64,12 +64,12 @@ function RadialProgressGauge({ progress, isRunning, currentSeconds, isInfinite }
   const backgroundStroke = isInfinite ? 'rgba(230, 0, 51, 0.15)' : 'rgba(160, 170, 181, 0.3)';
 
   return (
-    <div style={{ position: 'relative', width: size, height: size, margin: '0 auto' }}>
+    <div style={{ position: 'relative', width: '100%', height: '100%', maxWidth: '300px', maxHeight: '300px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <svg 
-        width={size} 
-        height={size} 
+        width="100%" 
+        height="100%" 
         viewBox={`0 0 ${size} ${size}`} 
-        style={{ overflow: 'visible', transform: 'rotate(-90deg)' }}
+        style={{ overflow: 'visible', transform: 'rotate(-90deg)', maxHeight: '100%' }}
       >
         <defs>
           <linearGradient id="mainGrad" x1="100%" y1="0%" x2="0%" y2="0%">
@@ -285,26 +285,24 @@ export default function App() {
   const formatNum = (n: number) => new Intl.NumberFormat('en-US').format(n);
 
   return (
-    <div className="flex-col justify-between" style={{ minHeight: '100vh', background: COLORS.BackgroundMain }}>
+    <div className="flex-col justify-between" style={{ height: '100dvh', background: COLORS.BackgroundMain, overflow: 'hidden' }}>
       
       {/* Scrollable Content Area */}
-      <main className="flex-col items-center" style={{ flex: 1, padding: '24px 24px', paddingBottom: '32px', overflowY: 'auto' }}>
+      <main className="flex-col items-center" style={{ flex: 1, padding: '16px 24px', overflow: 'hidden', minHeight: 0 }}>
         
         {/* Header */}
-        <div className="flex-col items-center mt-4 text-center">
-          <img src="/logo.png" alt="KanAkademi Logo" style={{ height: '80px', marginBottom: '8px' }} />
+        <div className="flex-col items-center text-center" style={{ flexShrink: 0 }}>
+          <img src="/logo.png" alt="KanAkademi Logo" style={{ height: '70px', marginBottom: '4px' }} />
           <div style={{ fontSize: '18px', fontWeight: 'bold', letterSpacing: '1.5px' }} className="text-gradient">
             BloodMetry Simulator
           </div>
-          <div style={{ color: COLORS.InstitutionalGray, fontSize: '12px', fontWeight: 500, marginTop: '4px' }}>
+          <div style={{ color: COLORS.InstitutionalGray, fontSize: '12px', fontWeight: 500, marginTop: '2px' }}>
             KanAkademi Global Impact Projection
           </div>
         </div>
 
-        <div style={{ height: '32px' }} />
-
         {/* Centerpiece: Radial Progress Ring */}
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '16px' }}>
+        <div style={{ flex: 1, minHeight: 0, width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '12px 0' }}>
           <RadialProgressGauge 
             progress={progress} 
             isRunning={timer.timerState === TimerState.RUNNING} 
@@ -313,10 +311,8 @@ export default function App() {
           />
         </div>
 
-        <div style={{ height: '32px' }} />
-
         {/* Dynamic Layout matching Android */}
-        <div style={{ width: '100%', maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <div style={{ width: '100%', maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '20px', flexShrink: 0 }}>
           
           {/* Running Stats (only when NOT finished/paused) */}
           {(timer.timerState !== TimerState.FINISHED && timer.timerState !== TimerState.PAUSED) && (
@@ -336,7 +332,7 @@ export default function App() {
                   <span style={{ color: COLORS.LiveGreen, fontSize: '36px', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatNum(livesSaved)}</span>
                 </div>
               </div>
-              <div style={{ color: COLORS.CorporateBlue, fontSize: '13px', fontWeight: 500, fontStyle: 'italic', marginTop: '24px', textAlign: 'center', maxWidth: '85%' }}>
+              <div style={{ color: COLORS.CorporateBlue, fontSize: '12px', fontWeight: 500, fontStyle: 'italic', marginTop: '16px', textAlign: 'center', maxWidth: '90%' }}>
                 "Around 118.5 million units of donated blood are collected globally every year."
               </div>
             </motion.div>
@@ -345,7 +341,7 @@ export default function App() {
           {/* Control Bar */}
           <div style={{ 
              borderTop: `1px solid rgba(160, 170, 181, 0.2)`, 
-             paddingTop: '32px',
+             paddingTop: '20px',
              width: '100%' 
           }}>
             <SimulationControlBar 
@@ -364,9 +360,9 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               className="flex-col items-center" 
-              style={{ background: 'rgba(160, 170, 181, 0.1)', border: `1px solid rgba(160, 170, 181, 0.3)`, borderRadius: '12px', padding: '24px', width: '100%' }}
+              style={{ background: 'rgba(160, 170, 181, 0.1)', border: `1px solid rgba(160, 170, 181, 0.3)`, borderRadius: '12px', padding: '16px', width: '100%' }}
             >
-              <div className="text-gradient" style={{ fontSize: '12px', fontWeight: 'bold', letterSpacing: '1.5px', marginBottom: '24px' }}>
+              <div className="text-gradient" style={{ fontSize: '12px', fontWeight: 'bold', letterSpacing: '1.5px', marginBottom: '16px' }}>
                 SIMULATION SUMMARY REPORT
               </div>
               <div className="flex-row w-full justify-around">
@@ -379,12 +375,12 @@ export default function App() {
                   <span style={{ color: COLORS.LiveGreen, fontSize: '32px', fontWeight: 900, fontFamily: 'monospace' }}>{formatNum(reportLives)}</span>
                 </div>
               </div>
-              <div style={{ color: COLORS.CorporateBlue, fontSize: '13px', fontWeight: 500, fontStyle: 'italic', marginTop: '24px', textAlign: 'center' }}>
+              <div style={{ color: COLORS.CorporateBlue, fontSize: '12px', fontWeight: 500, fontStyle: 'italic', marginTop: '16px', textAlign: 'center' }}>
                 "Around 118.5 million units of donated blood are collected globally every year."
               </div>
               {timer.timerState === TimerState.FINISHED && (
-                <div style={{ width: '100%', marginTop: '24px' }}>
-                  <button className="bg-gradient flex-row items-center justify-center w-full" style={{ border: 'none', height: '48px', borderRadius: '8px', gap: '8px', cursor: 'pointer' }}>
+                <div style={{ width: '100%', marginTop: '16px' }}>
+                  <button className="bg-gradient flex-row items-center justify-center w-full" style={{ border: 'none', height: '40px', borderRadius: '8px', gap: '8px', cursor: 'pointer' }}>
                     <Info size={18} color={COLORS.ElectricWhite} />
                     <span style={{ color: COLORS.ElectricWhite, fontWeight: 500, fontSize: '14px' }}>Explore KanAkademi Resources</span>
                   </button>
